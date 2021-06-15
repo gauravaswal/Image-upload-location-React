@@ -1,57 +1,70 @@
-import React,{useEffect}from 'react'
-import { getgallery } from '../services/actions/gallery';
+import React, { useEffect } from "react";
+import { getgallery } from "../services/actions/gallery";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import { Button, Card, CardDeck, Container, CardGroup ,Row,Col} from "react-bootstrap";
 
 // import {getgallery} from "../"
 const ImageShow = () => {
-const history=useHistory();
-    const dispatch = useDispatch();
- const state = useSelector(state => state.gallery.GALLERY.data)
-    const getImage = (e) =>{
-        e.preventDefault()
-        dispatch(getgallery())
-    }
-    return (
-        <div >
-        <input type="submit" name="button" value="Show images" onClick={getImage}/>
-           {(state && state.length>0)?state.map((image,idx)=>{return <div style={{display:'flex',flexWrap:'wrap'}} key={idx}>{
-          <img style={{margin:'10px'}} src={process.env.REACT_APP_API_URL +"/uploads/" + image.name} height={240} width={240}/>
-           }
-           <div style={{display:'flex',flexDirection:'column',textAlign:'left',justifyContent:'space-evenly'}}>
-               <div>
-           ImageName:{
-               image.name
-           }</div>
-           <div>
-             Height:{
-               image.height
-           }</div>
-           <div>
-             Width:{
-               image.width
-           }</div>
-             <div>
-             Extension:{
-               image.extension
-           }</div>
-           <div>
-           Size:{image.size}
-           </div>
-           <button onClick={()=>history.push({
-               pathname:'/imagelocation',
-               state: { 
-               lat:image.location.coordinates[1], 
-               long:image.location.coordinates[0]
-           }
-       }
-               )}>show on map</button>
-           </div>
-           </div>
-           })
-           
-        :<> </>}        </div>
-    )
-}
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.gallery.GALLERY.data);
+  const getImage = (e) => {
+    e.preventDefault();
+    dispatch(getgallery());
+  };
+  return (
+    <div >
+    <div className="text-center">
+   <Button className="my-auto" type="submit" variant="warning" onClick={getImage}>
+    Show Images
+   </Button>
+   </div>
+  
+    <Row xs={1} md={3} className="g-4 mt-5">
 
-export default ImageShow
+      {state && state.length > 0
+        ? state.map((image, idx) => {
+            return (
+              <Col>
+              <Card >
+                <Card.Img
+                  variant="top"
+                  src={process.env.REACT_APP_API_URL + "/uploads/" + image.name}
+                  height={150}
+                  width={150}
+                />
+                <Card.Body>
+                  <Card.Title>Name:{image.name}</Card.Title>
+                  <Card.Text>Height:{image.height}</Card.Text>
+                  <Card.Text>Width:{image.width}</Card.Text>
+                  <Card.Text>Extension:{image.extension}</Card.Text>
+                  <Card.Text>Size:{image.size}</Card.Text>
+                </Card.Body>
+                <Card.Footer>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    history.push({
+                      pathname: "/imagelocation",
+                      state: {
+                        lat: image.location.coordinates[1],
+                        long: image.location.coordinates[0],
+                      },
+                    })
+                  }
+                >
+                  Show on Map
+                </Button>
+                </Card.Footer>
+              </Card>
+              </Col>
+            );
+          })
+        : ""}
+        </Row>
+    </div>
+  );
+};
+
+export default ImageShow;
